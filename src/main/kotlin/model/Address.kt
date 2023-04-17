@@ -11,8 +11,8 @@ data class Address(
 
     override fun hashCode(): Int {
         return timeDifference +
-                (targetFrequency - targetFrequency % FUZ_FACTOR) * 1000 +
-                (referenceFrequency - referenceFrequency % FUZ_FACTOR) + 1000000
+                (targetFrequency - targetFrequency % FUZ_FACTOR) * 10 +
+                (referenceFrequency - referenceFrequency % FUZ_FACTOR) * 100000
     }
 
     override fun equals(other: Any?): Boolean {
