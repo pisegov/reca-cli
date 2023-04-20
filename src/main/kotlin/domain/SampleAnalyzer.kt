@@ -82,13 +82,7 @@ class SampleAnalyzer(
             }
         })
 
-        val thread = Thread(audioDispatcher)
-
-        // want to stop recording from microphone by keyboard input
-        thread.start()
-//        readln()
-//        audioDispatcher.stop()
-        thread.join()
+        inputOutputProvider.record(audioDispatcher)
 
         println("${allPeaksFound.size} peaks found")
 

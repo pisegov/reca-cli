@@ -18,7 +18,21 @@ class MicrophoneInputOutputProvider(peaksOutputFileName: String) : InputOutputPr
         return AudioDispatcherFactory.fromDefaultMicrophone(sampleRate.toInt(), bufferSize, 0)
     }
 
-    override fun provideOutputPath(): Path {
-        return path
+//    override fun provideOutputPath(): Path {
+//        return path
+//    }
+
+    override fun record(dispatcher: AudioDispatcher) {
+
+        println("Press Enter for microphone recording")
+        readln()
+
+        val thread = Thread(dispatcher)
+        thread.start()
+
+        // want to stop recording from microphone by keyboard input
+        readln()
+        dispatcher.stop()
+        thread.join()
     }
 }

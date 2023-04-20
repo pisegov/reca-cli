@@ -25,14 +25,15 @@ fun main(args: Array<String>) {
         SchemaUtils.create(SongsDAO)
     }
 
-    val fileAddresses = sampleAnalyzer.getHashesFromSample(
-        FileInputOutputProvider("japan-orig.wav", "data.txt")
-//        FileInputOutputProvider("out.wav", "data.txt")
+    val microSongId = 2
+    val microIOProvider = MicrophoneInputOutputProvider(
+        TEXT_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + TEXT_EXTENSION
     )
-    val microAddresses = sampleAnalyzer.getHashesFromSample(
-//        MicrophoneInputOutputProvider("micro.txt")
-//        FileInputOutputProvider("in-the-end-a-capella.wav", "micro.txt")
-        FileInputOutputProvider("japan.wav", "micro.txt")
+
+    val fullSongsList = getAllFilesInResources()
+    val recordedFileIOProvider = FileInputOutputProvider(
+        AUDIO_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + SONG_EXTENSION,
+        TEXT_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + TEXT_EXTENSION
     )
     CoincidencesFinder().addressesCoincidences(fileAddresses, microAddresses)
 

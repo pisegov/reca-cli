@@ -20,7 +20,11 @@ class FileInputOutputProvider(private val inputFileName: String, peaksOutputFile
         return AudioDispatcherFactory.fromFile(File(inputFileName), bufferSize, 0)
     }
 
-    override fun provideOutputPath(): Path {
-        return path
+//    override fun provideOutputPath(): Path {
+//        return path
+//    }
+
+    override fun record(dispatcher: AudioDispatcher) {
+        dispatcher.run()
     }
 }

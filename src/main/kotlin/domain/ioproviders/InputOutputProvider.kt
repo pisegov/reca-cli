@@ -5,5 +5,7 @@ import java.nio.file.Path
 
 interface InputOutputProvider {
     fun provideAudioDispatcher(sampleRate: Float, bufferSize: Int): AudioDispatcher
-    fun provideOutputPath(): Path
+
+    //    fun provideOutputPath(): Path
+    fun record(dispatcher: AudioDispatcher)
 }
