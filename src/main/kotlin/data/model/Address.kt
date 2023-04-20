@@ -1,9 +1,10 @@
-package model
+package data.model
 
 data class Address(
     val referenceFrequency: Int,
     val targetFrequency: Int,
     val timeDifference: Int,
+    val anchorTimeStamp: Int,
 ) {
     companion object {
         const val FUZ_FACTOR = 5
@@ -23,6 +24,7 @@ data class Address(
 
         if (referenceFrequency != other.referenceFrequency) return false
         if (targetFrequency != other.targetFrequency) return false
-        return timeDifference == other.timeDifference
+        if (timeDifference != other.timeDifference) return false
+        return anchorTimeStamp == other.anchorTimeStamp
     }
 }

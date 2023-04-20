@@ -35,31 +35,7 @@ fun main(args: Array<String>) {
         AUDIO_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + SONG_EXTENSION,
         TEXT_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + TEXT_EXTENSION
     )
-    CoincidencesFinder().addressesCoincidences(fileAddresses, microAddresses)
-
-
-//    val songsList = listOf<String>(
-//        "record",
-//        "rock",
-//        "pop",
-//        "japan",
-//        "in-the-end-a-capella",
-//        "in-the-end-instrumental",
-//    )
-
-//    var i = 0
-//    songsList.map { song ->
-//        sampleAnalyzer.getHashesFromSample(
-//            FileInputOutputProvider("$song.wav", "$song.txt")
-//        )
-//    }.forEach { songAddressesList ->
-//        println("\n${songsList[i++]}")
-//        CoincidencesFinder().addressesCoincidences(fileAddresses, songAddressesList)
-//    }
-
-//        val recorder = util.Recorder(11025F)
-//    songsList.forEach { song ->
-//        recordSong(recorder, song)
-//
-//    }
+//    addSongsBase(fullSongsList)
+//    testSong(recordedFileIOProvider)
+    testSong(microIOProvider)
 }

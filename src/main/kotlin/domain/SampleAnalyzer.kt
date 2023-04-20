@@ -4,8 +4,8 @@ import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
 import be.tarsos.dsp.SpectralPeakProcessor
 import domain.ioproviders.InputOutputProvider
-import model.Address
-import model.Peak
+import data.model.Address
+import data.model.Peak
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
@@ -25,6 +25,7 @@ class SampleAnalyzer(
         val medianFilterLength = 10
         val noiseFloorFactor = 0F
         val numberOfPeaks = 2
+        val minDistanceInCents = 1000
 
         val audioDispatcher = inputOutputProvider.provideAudioDispatcher(sampleRate, bufferSize)
 //        audioDispatcher.addAudioProcessor(AudioPlayer(AudioFormat(sampleRate, 16, 1, true, false)))
@@ -58,7 +59,7 @@ class SampleAnalyzer(
                     frequencyEstimates,
                     localMaximaIndexes.toList(),
                     numberOfPeaks,
-                    1000
+                    minDistanceInCents
                 )
 
                 spectralPeaksList.forEach { peak ->

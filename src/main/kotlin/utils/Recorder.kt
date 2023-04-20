@@ -1,4 +1,4 @@
-package util
+package utils
 
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.io.TarsosDSPAudioFormat
@@ -9,6 +9,14 @@ class Recorder(
     sampleRate: Float,
     bufferSize: Int = 1024,
 ) {
+
+    companion object {
+        fun recordSong(recorder: Recorder, title: String = "record.wav") {
+            println("Press enter to start recording $title")
+            readln()
+            recorder.recordSample(title)
+        }
+    }
 
     private val dispatcher: AudioDispatcher =
         AudioDispatcherFactory.fromDefaultMicrophone(sampleRate.toInt(), bufferSize, 128)
