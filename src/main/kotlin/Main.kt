@@ -1,17 +1,29 @@
+import data.fingerprints.FingerprintsDAO
+import data.songs.SongsDAO
 import domain.ioproviders.FileInputOutputProvider
-import domain.SampleAnalyzer
-import util.CoincidencesFinder
-import util.Recorder
-
-fun recordSong(recorder: Recorder, title: String = "record.wav") {
-    println("Press enter to start recording $title")
-    readln()
-    recorder.recordSample(title)
-}
+import domain.ioproviders.MicrophoneInputOutputProvider
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
+import utils.*
+import java.io.File
+import java.util.*
 
 fun main(args: Array<String>) {
+    val properties = Properties()
+    properties.load(File("local.properties").inputStream())
 
-    val sampleAnalyzer = SampleAnalyzer(1024, 11025F)
+    Database.connect(
+        url = "jdbc:mysql://localhost:3306/reca",
+        driver = "com.mysql.cj.jdbc.Driver",
+        user = properties.getProperty("mysql_user"),
+        password = properties.getProperty("mysql_password")
+    )
+
+    transaction {
+        SchemaUtils.create(FingerprintsDAO)
+        SchemaUtils.create(SongsDAO)
+    }
 
     val fileAddresses = sampleAnalyzer.getHashesFromSample(
         FileInputOutputProvider("japan-orig.wav", "data.txt")
