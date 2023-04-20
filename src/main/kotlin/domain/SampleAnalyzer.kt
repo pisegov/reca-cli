@@ -51,7 +51,7 @@ class SampleAnalyzer(
                     SpectralPeakProcessor.findLocalMaxima(magnitudes, noiseFloor)
 
                 //remove frequency estimates not in range 500..3000
-                filterFrequencyEstimates(localMaximaIndexes, frequencyEstimates, 500f..2500f)
+                filterFrequencyEstimates(localMaximaIndexes, frequencyEstimates, 500f..3000f)
 
                 val spectralPeaksList: List<SpectralPeakProcessor.SpectralPeak> = SpectralPeakProcessor.findPeaks(
                     magnitudes,
