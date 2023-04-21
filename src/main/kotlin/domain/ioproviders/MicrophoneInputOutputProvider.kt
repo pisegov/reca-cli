@@ -8,10 +8,10 @@ import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 
 class MicrophoneInputOutputProvider(peaksOutputFileName: String) : InputOutputProvider {
-    private val path: Path = Paths.get(peaksOutputFileName)
+//    private val path: Path = Paths.get(peaksOutputFileName)
 
     init {
-        Files.write(path, byteArrayOf(), StandardOpenOption.TRUNCATE_EXISTING)
+//        Files.write(path, byteArrayOf(), StandardOpenOption.TRUNCATE_EXISTING)
     }
 
     override fun provideAudioDispatcher(sampleRate: Float, bufferSize: Int): AudioDispatcher {

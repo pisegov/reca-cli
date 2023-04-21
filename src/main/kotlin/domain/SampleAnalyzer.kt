@@ -68,7 +68,7 @@ class SampleAnalyzer(
                     allPeaksFound.add(Peak(timeStamp, peak.frequencyInHertz.toInt()))
 
                     // for constellation maps plotting
-                    Files.write(inputOutputProvider.provideOutputPath(), str.toByteArray(), StandardOpenOption.APPEND)
+//                    Files.write(inputOutputProvider.provideOutputPath(), str.toByteArray(), StandardOpenOption.APPEND)
                 }
                 timeStamp++
 
