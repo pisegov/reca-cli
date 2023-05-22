@@ -1,29 +1,15 @@
-package domain.ioproviders
+package domain.operating_specifiers.audio_dispatcher_providers
 
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardOpenOption
 
-class MicrophoneInputOutputProvider(peaksOutputFileName: String) : InputOutputProvider {
-//    private val path: Path = Paths.get(peaksOutputFileName)
-
-    init {
-//        Files.write(path, byteArrayOf(), StandardOpenOption.TRUNCATE_EXISTING)
-    }
+class MicrophoneAudioDispatcherProvider : AudioDispatcherProvider {
 
     override fun provideAudioDispatcher(sampleRate: Float, bufferSize: Int): AudioDispatcher {
         return AudioDispatcherFactory.fromDefaultMicrophone(sampleRate.toInt(), bufferSize, 0)
     }
 
-//    override fun provideOutputPath(): Path {
-//        return path
-//    }
-
-    override fun record(dispatcher: AudioDispatcher) {
-
+    override fun startDispatcher(dispatcher: AudioDispatcher) {
         println("Press Enter for microphone recording")
         readln()
 

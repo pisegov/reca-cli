@@ -6,8 +6,10 @@ import App.songsRepo
 import data.fingerprints.model.FingerprintDTO
 import data.model.SongWithTimeDelta
 import data.songs.model.SongDTO
-import domain.ioproviders.FileInputOutputProvider
-import domain.ioproviders.InputOutputProvider
+import domain.operating_specifiers.audio_dispatcher_providers.FileAudioDispatcherProvider
+import domain.operating_specifiers.audio_dispatcher_providers.AudioDispatcherProvider
+import domain.operating_specifiers.constellation_map_writers.ConstellationMapWriter
+import domain.operating_specifiers.constellation_map_writers.NoConstellationMapWriter
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.streams.toList
@@ -30,10 +32,9 @@ fun addSongsBase(fullSongsList: List<String>) {
     fullSongsList.forEachIndexed { index, song ->
 
         val songFingerprints = sampleAnalyzer.getHashesFromSample(
-            FileInputOutputProvider(
-                FULL_SONGS_DIRECTORY + song + SONG_EXTENSION,
-                TEXT_RESOURCES_DIRECTORY + song + TEXT_EXTENSION
-            )
+            FileAudioDispatcherProvider(preprocessedSongPath),
+//            ConstellationFileWriter(TEXT_RESOURCES_DIRECTORY + song + TEXT_EXTENSION)
+            NoConstellationMapWriter()
         ).map {
             FingerprintDTO(
                 hash = it.hashCode(),
@@ -52,11 +53,17 @@ fun addSongsBase(fullSongsList: List<String>) {
     }
 }
 
-fun testSong(ioProvider: InputOutputProvider) {
+fun testSong(
+    dispatcherProvider: AudioDispatcherProvider,
+    constellationMapWriter: ConstellationMapWriter = NoConstellationMapWriter(),
+) {
 
     // can analyze from file or from microphone
-    val microAddressesList = sampleAnalyzer.getHashesFromSample(ioProvider)
-        .map { it.hashCode() to it.anchorTimeStamp }
+    val microAddressesList =
+        sampleAnalyzer
+            .getHashesFromSample(dispatcherProvider, constellationMapWriter)
+            .map { it.hashCode() to it.anchorTimeStamp }
+
     println("addresses found: ${microAddressesList.size}")
 
     val matchingFingerprints = repo.getFingerprints(microAddressesList.map { it.first })

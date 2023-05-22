@@ -3,11 +3,11 @@ package domain
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
 import be.tarsos.dsp.SpectralPeakProcessor
-import domain.ioproviders.InputOutputProvider
+import domain.operating_specifiers.audio_dispatcher_providers.AudioDispatcherProvider
 import data.model.Address
 import data.model.Peak
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
+import domain.operating_specifiers.constellation_map_writers.ConstellationMapWriter
+import domain.operating_specifiers.constellation_map_writers.NoConstellationMapWriter
 
 class SampleAnalyzer(
     private val bufferSize: Int = 1024,
@@ -20,15 +20,16 @@ class SampleAnalyzer(
     }
 
     fun getHashesFromSample(
-        inputOutputProvider: InputOutputProvider,
+        audioDispatcherProvider: AudioDispatcherProvider,
+        // if you want to plot a constellation map, the writer adds this extra functionality
+        constellationMapWriter: ConstellationMapWriter = NoConstellationMapWriter(),
     ): List<Address> {
         val medianFilterLength = 10
         val noiseFloorFactor = 0F
         val numberOfPeaks = 2
         val minDistanceInCents = 1000
 
-        val audioDispatcher = inputOutputProvider.provideAudioDispatcher(sampleRate, bufferSize)
-//        audioDispatcher.addAudioProcessor(AudioPlayer(AudioFormat(sampleRate, 16, 1, true, false)))
+        val audioDispatcher = audioDispatcherProvider.provideAudioDispatcher(sampleRate, bufferSize)
 
         val spectralPeakFollower = SpectralPeakProcessor(bufferSize, 0, sampleRate.toInt())
         audioDispatcher.addAudioProcessor(spectralPeakFollower)
@@ -63,12 +64,12 @@ class SampleAnalyzer(
                 )
 
                 spectralPeaksList.forEach { peak ->
-                    val str = "$timeStamp ${peak.frequencyInHertz}\n"
-                    println(str.trim())
-                    allPeaksFound.add(Peak(timeStamp, peak.frequencyInHertz.toInt()))
+                    val frequency = peak.frequencyInHertz
+                    allPeaksFound.add(Peak(timeStamp, frequency.toInt()))
 
                     // for constellation maps plotting
-//                    Files.write(inputOutputProvider.provideOutputPath(), str.toByteArray(), StandardOpenOption.APPEND)
+                    // nothing will be written if constellationMapWriter is NoConstellationMapWriter
+                    constellationMapWriter.writePeaksData(timeStamp, frequency)
                 }
                 timeStamp++
 
@@ -83,7 +84,7 @@ class SampleAnalyzer(
             }
         })
 
-        inputOutputProvider.record(audioDispatcher)
+        audioDispatcherProvider.startDispatcher(audioDispatcher)
 
         println("${allPeaksFound.size} peaks found")
 

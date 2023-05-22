@@ -2,6 +2,7 @@ package utils
 
 const val RESOURCES_DIRECTORY = "/home/pmikhail/reca-resources/"
 const val AUDIO_RESOURCES = "audio/"
+const val TEXT_RESOURCES = "txt-data/"
 const val SAMPLE_RATE_11025 = "11025/"
 const val TEXT_RESOURCES = "txt-data/"
 const val FULL_SONGS = "full-songs/converted/"
