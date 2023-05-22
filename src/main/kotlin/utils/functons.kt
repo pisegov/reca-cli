@@ -16,21 +16,23 @@ import kotlin.streams.toList
 
 //https://stackoverflow.com/questions/49419971/kotlin-get-list-of-all-files-in-resource-folder
 fun getAllFilesInResources(): List<String> {
-    val resourcesPath = Paths.get(FULL_SONGS_DIRECTORY)
+    val resourcesPath = Paths.get(ORIGINALS_DIRECTORY)
     return Files.walk(resourcesPath)
         .filter { item -> Files.isRegularFile(item) }
-        .filter { item -> item.toString().endsWith(".wav") }
-        .map { item ->
-            val str = item.toString()
-            val lastDashIndex = str.lastIndexOf('/')
-            str.substring(lastDashIndex + 1, str.length - 4)
-        }.toList()
+        .filter { item ->
+            val title = item.toString()
+            title.endsWith(".mp3")
+        }
+        .map { item -> item.toString() }
+        .toList()
 }
 
 fun addSongsBase(fullSongsList: List<String>) {
-    // analyze a little songs base
+    // analyze provided songs list
     fullSongsList.forEachIndexed { index, song ->
-
+        val preprocessor = Preprocessor(song)
+        val songTitleWithArtist = preprocessor.getTitleWithArtist()
+        val preprocessedSongPath = preprocessor.downSampleAndGetPath()
         val songFingerprints = sampleAnalyzer.getHashesFromSample(
             FileAudioDispatcherProvider(preprocessedSongPath),
 //            ConstellationFileWriter(TEXT_RESOURCES_DIRECTORY + song + TEXT_EXTENSION)
@@ -42,12 +44,12 @@ fun addSongsBase(fullSongsList: List<String>) {
                 songId = index + 1
             )
         }
-        println("\n$index: $song")
+        println("\n$index: $songTitleWithArtist")
         repo.addFingerprintsList(songFingerprints)
         songsRepo.insertSong(
             SongDTO(
                 id = index + 1,
-                title = song
+                title = songTitleWithArtist
             )
         )
     }
