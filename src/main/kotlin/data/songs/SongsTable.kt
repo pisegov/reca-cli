@@ -1,6 +1,7 @@
 package data.songs
 
 import data.songs.model.SongDTO
+import domain.Song
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.insert
@@ -11,11 +12,15 @@ object SongsTable : Table("songs") {
     private val title = SongsTable.varchar("title", 100)
     override val primaryKey = PrimaryKey(id, name = "Songs_Id")
 
-    fun insert(songDTO: SongDTO) {
-        transaction {
-            insert {
-                it[title] = songDTO.title
+    fun insert(song: Song): SongDTO {
+        return transaction {
+            val model = insert {
+                it[title] = song.title
             }
+            SongDTO(
+                id = model[SongsTable.id],
+                title = model[title]
+            )
         }
     }
 

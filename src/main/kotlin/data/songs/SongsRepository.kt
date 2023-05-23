@@ -1,10 +1,11 @@
 package data.songs
 
 import data.songs.model.SongDTO
+import domain.Song
 
 class SongsRepository(private val dataSource: SongsDataSource) {
 
-    fun insertSong(song: SongDTO) {
+    fun insertSong(song: Song): SongDTO {
         return dataSource.insert(song)
     }
 
