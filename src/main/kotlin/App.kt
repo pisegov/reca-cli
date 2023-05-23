@@ -5,7 +5,7 @@ import data.songs.SongsRepository
 import domain.SampleAnalyzer
 
 object App {
-    val repo = FingerprintsRepository(DatabaseDataSource())
-    val songsRepo = SongsRepository(SongsDBDatasource())
+    val fingerprintsRepository = FingerprintsRepository(DatabaseDataSource())
+    val songsRepository = SongsRepository(SongsDBDatasource())
     val sampleAnalyzer = SampleAnalyzer(1024, 11025F)
 }

@@ -5,10 +5,10 @@ import data.fingerprints.model.FingerprintDTO
 class DatabaseDataSource : FingerprintsDataSource {
 
     override fun addFingerprintsList(list: List<FingerprintDTO>) {
-        FingerprintsDAO.batchInsert(list)
+        FingerprintsTable.batchInsert(list)
     }
 
     override fun getFingerprints(hashesList: Collection<Int>): List<FingerprintDTO> {
-        return FingerprintsDAO.fetchFingerprints(hashesList)
+        return FingerprintsTable.fetchFingerprints(hashesList)
     }
 }

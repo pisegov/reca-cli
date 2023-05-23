@@ -6,9 +6,9 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object SongsDAO : Table("songs") {
-    private val id = SongsDAO.integer("id").autoIncrement()
-    private val title = SongsDAO.varchar("title", 100)
+object SongsTable : Table("songs") {
+    private val id = SongsTable.integer("id").autoIncrement()
+    private val title = SongsTable.varchar("title", 100)
     override val primaryKey = PrimaryKey(id, name = "Songs_Id")
 
     fun insert(songDTO: SongDTO) {
@@ -20,21 +20,21 @@ object SongsDAO : Table("songs") {
     }
 
     fun fetchSong(id: Int): SongDTO {
-        val songModel = SongsDAO.select { SongsDAO.id.eq(id) }.single()
+        val songModel = SongsTable.select { SongsTable.id.eq(id) }.single()
 
         return SongDTO(
-            id = songModel[SongsDAO.id],
+            id = songModel[SongsTable.id],
             title = songModel[title]
         )
     }
 
     fun fetchSongsList(idList: Collection<Int>): Map<Int, SongDTO> {
         return transaction {
-            val songModel = SongsDAO.select { SongsDAO.id.inList(idList) }.limit(10)
+            val songModel = SongsTable.select { SongsTable.id.inList(idList) }.limit(10)
 
             songModel.toList().associate { row ->
-                row[SongsDAO.id] to SongDTO(
-                    id = row[SongsDAO.id],
+                row[SongsTable.id] to SongDTO(
+                    id = row[SongsTable.id],
                     title = row[title]
                 )
             }

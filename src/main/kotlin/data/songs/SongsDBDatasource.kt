@@ -8,6 +8,6 @@ class SongsDBDatasource : SongsDataSource {
     }
 
     override fun fetchSongsList(idList: Collection<Int>): Map<Int, SongDTO> {
-        return SongsDAO.fetchSongsList(idList)
+        return SongsTable.fetchSongsList(idList)
     }
 }
