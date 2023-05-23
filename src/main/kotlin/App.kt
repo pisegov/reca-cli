@@ -3,8 +3,8 @@ import data.fingerprints.FingerprintsRepository
 import data.songs.SongsDBDatasource
 import data.songs.SongsRepository
 import domain.SampleAnalyzer
-import utils.DatabaseFiller
-import utils.Recognizer
+import domain.DatabaseFiller
+import domain.Recognizer
 
 object App {
     val fingerprintsRepository = FingerprintsRepository(DatabaseDataSource())

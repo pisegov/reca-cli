@@ -1,4 +1,4 @@
-package utils
+package domain
 
 import App.fingerprintsRepository
 import App.sampleAnalyzer

@@ -1,7 +1,7 @@
 package data.songs
 
 import data.songs.model.SongDTO
-import domain.Song
+import data.model.Song
 
 class SongsDBDatasource : SongsDataSource {
     override fun insert(song: Song): SongDTO {

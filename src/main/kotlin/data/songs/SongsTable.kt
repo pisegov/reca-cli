@@ -1,7 +1,7 @@
 package data.songs
 
 import data.songs.model.SongDTO
-import domain.Song
+import data.model.Song
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.insert

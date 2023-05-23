@@ -1,15 +1,16 @@
-package utils
+package domain
 
 import App.fingerprintsRepository
 import App.sampleAnalyzer
 import App.songsRepository
 import data.fingerprints.model.FingerprintDTO
-import domain.Song
+import data.model.Song
 import domain.operating_specifiers.audio_dispatcher_providers.FileAudioDispatcherProvider
 import domain.operating_specifiers.constellation_map_writers.NoConstellationMapWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import utils.ORIGINALS_DIRECTORY
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

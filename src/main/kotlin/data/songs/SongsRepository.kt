@@ -1,7 +1,7 @@
 package data.songs
 
 import data.songs.model.SongDTO
-import domain.Song
+import data.model.Song
 
 class SongsRepository(private val dataSource: SongsDataSource) {
 
