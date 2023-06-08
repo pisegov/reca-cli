@@ -12,6 +12,11 @@ object FingerprintsTable : Table(name = "fingerprints") {
 
     private val offset = FingerprintsTable.integer("time_offset")
 
+    init {
+        index(false, hash)
+        index(true, hash, songId, offset)
+    }
+
     fun batchInsert(list: List<FingerprintDTO>) {
         transaction {
             batchInsert(list) {

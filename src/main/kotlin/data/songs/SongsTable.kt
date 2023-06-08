@@ -12,6 +12,10 @@ object SongsTable : Table("songs") {
     private val title = SongsTable.varchar("title", 100)
     override val primaryKey = PrimaryKey(id, name = "Songs_Id")
 
+    init {
+        index(true, id)
+    }
+
     fun insert(song: Song): SongDTO {
         return transaction {
             val model = insert {
