@@ -29,17 +29,16 @@ class SampleAnalyzer(
         val numberOfPeaks = 2
         val minDistanceInCents = 1000
 
-        val audioDispatcher = audioDispatcherProvider.provideAudioDispatcher(sampleRate, bufferSize)
-
+        val audioProcessors = mutableListOf<AudioProcessor>()
         val spectralPeakFollower = SpectralPeakProcessor(bufferSize, 0, sampleRate.toInt())
-        audioDispatcher.addAudioProcessor(spectralPeakFollower)
+        audioProcessors.add(spectralPeakFollower)
         val allPeaksFound = mutableListOf<Peak>()
         val addresses = mutableListOf<Address>()
         var timeStamp = 0
         var anchorPointIndex = 0
 
         // this audio processor invoke method process on each time chunk
-        audioDispatcher.addAudioProcessor(object : AudioProcessor {
+        val audioProcessor = object : AudioProcessor {
             override fun processingFinished() {}
             override fun process(audioEvent: AudioEvent): Boolean {
                 val noiseFloor = SpectralPeakProcessor.calculateNoiseFloor(
@@ -82,9 +81,10 @@ class SampleAnalyzer(
 
                 return true
             }
-        })
+        }
 
-        audioDispatcherProvider.startDispatcher(audioDispatcher)
+        audioProcessors.add(audioProcessor)
+        audioDispatcherProvider.addProcessorsAndStartDispatcher(audioProcessors)
 
         println("${allPeaksFound.size} peaks found")
 

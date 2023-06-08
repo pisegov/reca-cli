@@ -1,9 +1,8 @@
 package domain.operating_specifiers.audio_dispatcher_providers
 
 import be.tarsos.dsp.AudioDispatcher
+import be.tarsos.dsp.AudioProcessor
 
 interface AudioDispatcherProvider {
-    fun provideAudioDispatcher(sampleRate: Float, bufferSize: Int): AudioDispatcher
-
-    fun startDispatcher(dispatcher: AudioDispatcher)
+    fun addProcessorsAndStartDispatcher(processors: List<AudioProcessor>)
 }
