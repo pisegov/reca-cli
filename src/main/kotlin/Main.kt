@@ -1,41 +1,39 @@
-import data.fingerprints.FingerprintsDAO
-import data.songs.SongsDAO
-import domain.ioproviders.FileInputOutputProvider
-import domain.ioproviders.MicrophoneInputOutputProvider
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import utils.*
-import java.io.File
-import java.util.*
+import App.dbFiller
+import App.recognizer
+import App.sampleAnalyzer
+import data.DatabaseProvider
+import domain.operating_specifiers.audio_dispatcher_providers.MicrophoneAudioDispatcherProvider
+import kotlinx.coroutines.runBlocking
+import utils.ORIGINALS_DIRECTORY
+import utils.Params
+import java.util.logging.Level
+import java.util.logging.Logger
+
+
+fun addNewSongsBase() {
+    DatabaseProvider.recreateTables()
+    runBlocking {
+        dbFiller.addSongsFromDirectory(ORIGINALS_DIRECTORY)
+    }
+}
+
+
+// https://stackoverflow.com/questions/50778442/how-to-disable-jaudiotagger-logger-completely
+fun disableLoggers() {
+    val pin = listOf<Logger>(Logger.getLogger("org.jaudiotagger"))
+    for (l: Logger in pin) l.level = Level.OFF
+}
+
+fun updateSampleAnalyzerParams(params: Params = Params()) {
+    sampleAnalyzer.params = params
+}
 
 fun main(args: Array<String>) {
-    val properties = Properties()
-    properties.load(File("local.properties").inputStream())
-
-    Database.connect(
-        url = "jdbc:mysql://localhost:3306/reca",
-        driver = "com.mysql.cj.jdbc.Driver",
-        user = properties.getProperty("mysql_user"),
-        password = properties.getProperty("mysql_password")
+    DatabaseProvider.provide()
+    disableLoggers()
+    updateSampleAnalyzerParams(
+        Params(numberOfPeaks = 3, referencePeakDistance = 13, targetAreaSize = 11)
     )
 
-    transaction {
-        SchemaUtils.create(FingerprintsDAO)
-        SchemaUtils.create(SongsDAO)
-    }
-
-    val microSongId = 2
-    val microIOProvider = MicrophoneInputOutputProvider(
-        TEXT_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + TEXT_EXTENSION
-    )
-
-    val fullSongsList = getAllFilesInResources()
-    val recordedFileIOProvider = FileInputOutputProvider(
-        AUDIO_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + SONG_EXTENSION,
-        TEXT_RESOURCES_DIRECTORY + recordedSongsList[microSongId] + TEXT_EXTENSION
-    )
-//    addSongsBase(fullSongsList)
-//    testSong(recordedFileIOProvider)
-    testSong(microIOProvider)
+    recognizer.recognizeSong(MicrophoneAudioDispatcherProvider())
 }
