@@ -1,0 +1,25 @@
+#+title: RECA -- Audio Recognition Application
+- An application with a command-line interface for recognizing music by recording from a microphone
+
+* Purpose
+- The application was created as a practical part for the final qualification paper at St. Petersburg State University
+
+* How it works
+- It implements the algorithm of the Shazam service
+
+- A user provides a fragment of a song for analysis
+- Analyzation algorithm finds characteristic points in the provided music fragment
+- These characteristic points are converted into "fingerprints" and compared with existing ones in the database
+- A list of possible songs is compiled based on the fingerprints found in the database
+- The song with the highest number of matches is given as a recognition result
+
+* Features
+- The user can interract with CLI and specify from where to recognize a song, from a file or from a recording from a microphone
+- The user can upload his own database of songs
+
+* Libraries and instruments used
+- [[https://github.com/JorenSix/TarsosDSP][TarsosDSP]] for spectral analysis and finding characteristic points
+- [[https://bitbucket.org/ijabz/jaudiotagger/src/master/README.md][Jaudiotagger]] for extracting tags from mp3 files
+- [[https://sox.sourceforge.net/][SoX]] and [[https://github.com/corballis/sox-wrapper-java][SoX Wrapper]] for preprocessing the source audio file
+- [[https://mariadb.org/][MariaDB]] as a database
+- [[https://github.com/JetBrains/Exposed][Exposed]] for database connection
