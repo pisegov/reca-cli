@@ -10,70 +10,81 @@ import domain.operating_specifiers.constellation_map_writers.NoConstellationMapW
 
 
 class Recognizer {
-    fun testSong(
+    fun recognizeSong(
         dispatcherProvider: AudioDispatcherProvider,
         constellationMapWriter: ConstellationMapWriter = NoConstellationMapWriter(),
     ) {
 
-        // can analyze from file or from microphone
-        val microAddressesList =
+        val recordedFingerprintsList =
             sampleAnalyzer
                 .getHashesFromSample(dispatcherProvider, constellationMapWriter)
-                .map { it.hashCode() to it.anchorTimeStamp }
+                .associate { it.hashCode() to it.anchorTimeStamp }
 
-        println("addresses found: ${microAddressesList.size}")
+        println("Fingerprints from record: ${recordedFingerprintsList.size}")
 
-        val matchingFingerprints = fingerprintsRepository.getFingerprints(microAddressesList.map { it.first })
+        val matchingFingerprints = fingerprintsRepository.getFingerprints(recordedFingerprintsList.keys)
+        println("Matching fingerprints from db: ${matchingFingerprints.size}")
 
-        println("fingerprints found = ${matchingFingerprints.size}")
-
-        val songsWithDeltas = microAddressesList
-            .associateWith { recordedFingerprint ->
-                matchingFingerprints.filter { matchingFingerprint ->
-                    matchingFingerprint.hash == recordedFingerprint.first
-                }
-            }
-            .flatMap { entry ->
-                val remoteFingerprint = entry.key
-                val dbFingerprintsList = entry.value
-                dbFingerprintsList.map { dbFingerprint ->
-                    SongWithTimeDelta(
-                        dbFingerprint.songId,
-                        (dbFingerprint.timeOffsetFromOriginal - remoteFingerprint.second)
-                    )
-                }
-            }
+        val songsWithDeltas = matchingFingerprints.map { dbFingerprint ->
+            SongWithTimeDelta(
+                songId = dbFingerprint.songId,
+                delta = dbFingerprint.timeOffsetFromOriginal - recordedFingerprintsList[dbFingerprint.hash]!!
+            )
+        }
 
 //     transform raw matching points from database
 //     to list of possible songs with maximums
 //     of quantities of time deltas between song point and record point
         val recognitionOptions = songsWithDeltas
-            .groupingBy { songWithDelta -> Pair(songWithDelta.songId, songWithDelta.delta) }
+            .groupingBy { it }
             .eachCount()
             .entries
-            .groupBy { it.key.first }
+            .groupBy { it.key.songId }
 
             // for now, we have map with this structure:
             // key: songId
-            // value: (songId, timeDelta) -> quantity
+            // value: list[(songId, timeDelta) -> quantity]
             // we take songId and maximum quantity of deltas for this song id
-            .map { entry -> Pair(entry.key, entry.value.maxBy { it.value }.value) }
-            .sortedByDescending { idToQtyPair -> idToQtyPair.second }
+            .map { entry ->
+                val songId = entry.key
+                val listOfTimeDeltasAndQtys = entry.value
 
-        val recOptionsWithTitles = getRecognitionOptionsWithTitles(recognitionOptions.toMap())
-        println(recOptionsWithTitles)
-        println(recOptionsWithTitles.maxBy { it.value }.key)
+                songId to
+                        listOfTimeDeltasAndQtys.maxBy {
+                            it.value // take maximum pair (timeDelta with qty) by qty
+                        }.value // and take this qty
+            }
+            .sortedByDescending { idToQtyPair -> idToQtyPair.second }
+            .take(10)
+        // now we have list of pairs (song id, max qty of fingerprints with the same time delta)
+
+
+        val recOptionsWithTitles = getRecognitionOptionsWithTitles(recognitionOptions)
+        val mostLikelyOption = recOptionsWithTitles[0].second
+        val secondMostLikelyOption = recOptionsWithTitles[1].second
+        val gapFromSecond = mostLikelyOption.toDouble() / secondMostLikelyOption.toDouble()
+        if (gapFromSecond > 1.5) {
+            println(recOptionsWithTitles[0].first)
+            println("The gap from the second is $gapFromSecond")
+        } else {
+            println("I'm unsure about the result")
+            println(recOptionsWithTitles)
+        }
+
+        recOptionsWithTitles.forEachIndexed { index, song ->
+            println("$index ${song.second}  ")
+        }
+
     }
 
-    private fun getRecognitionOptionsWithTitles(recognitionOptionsIDs: Map<Int, Int>): Map<String, Int> {
-        val list = recognitionOptionsIDs.entries.sortedByDescending { it.value }.subList(0, 10)
-        val songTitles = songsRepository.fetchSongsList(list.map { it.key })
+    private fun getRecognitionOptionsWithTitles(recognitionOptions: List<Pair<Int, Int>>): List<Pair<String, Int>> {
+        val songTitles = songsRepository.fetchSongsList(recognitionOptions.map { it.first })
 
-        return list.associate { entry ->
-            val songId = entry.key
-            val songTitle = songTitles[songId]?.title
-            val maxDeltasQty = entry.value
-            (songTitle ?: "Undefined Song") to (maxDeltasQty)
+        return recognitionOptions.map { idToQty ->
+            val id = idToQty.first
+            val qty = idToQty.second
+            val title = songTitles[id]?.title ?: "Undefined Song"
+            title to qty
         }
     }
 }
