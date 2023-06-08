@@ -6,6 +6,7 @@ import be.tarsos.dsp.SpectralPeakProcessor
 import domain.operating_specifiers.audio_dispatcher_providers.AudioDispatcherProvider
 import data.model.Address
 import data.model.Peak
+import utils.Params
 import domain.operating_specifiers.constellation_map_writers.ConstellationMapWriter
 import domain.operating_specifiers.constellation_map_writers.NoConstellationMapWriter
 
@@ -14,10 +15,7 @@ class SampleAnalyzer(
     private val sampleRate: Float = 11025F,
 ) {
 
-    companion object {
-        const val TARGET_AREA_SIZE = 5
-        const val REFERENCE_PEAK_DISTANCE = 3
-    }
+    var params = Params()
 
     fun getHashesFromSample(
         audioDispatcherProvider: AudioDispatcherProvider,
@@ -26,8 +24,8 @@ class SampleAnalyzer(
     ): List<Address> {
         val medianFilterLength = 10
         val noiseFloorFactor = 0F
-        val numberOfPeaks = 2
-        val minDistanceInCents = 1000
+        val numberOfPeaks = params.numberOfPeaks
+        val minDistanceInCents = 0
 
         val audioProcessors = mutableListOf<AudioProcessor>()
         val spectralPeakFollower = SpectralPeakProcessor(bufferSize, 0, sampleRate.toInt())
@@ -72,10 +70,10 @@ class SampleAnalyzer(
                 }
                 timeStamp++
 
-                val newAddresses = makeAddresses(allPeaksFound, anchorPointIndex)
+                val newAddresses = makeAddresses(allPeaksFound, anchorPointIndex, params)
                 addresses.addAll(newAddresses)
 
-                anchorPointIndex = allPeaksFound.size - TARGET_AREA_SIZE - REFERENCE_PEAK_DISTANCE
+                anchorPointIndex = allPeaksFound.size - params.targetAreaSize - params.referencePeakDistance
                 if (newAddresses.isNotEmpty()) anchorPointIndex++
                 if (anchorPointIndex < 0) anchorPointIndex = 0
 
@@ -113,11 +111,11 @@ class SampleAnalyzer(
         }
     }
 
-    private fun makeAddresses(allPeaksFound: List<Peak>, referenceIndex: Int): List<Address> {
+    private fun makeAddresses(allPeaksFound: List<Peak>, referenceIndex: Int, params: Params): List<Address> {
         val addresses = mutableListOf<Address>()
         var reference = referenceIndex
-        var left = reference + REFERENCE_PEAK_DISTANCE
-        var right = left + TARGET_AREA_SIZE - 1
+        var left = reference + params.referencePeakDistance
+        var right = left + params.targetAreaSize - 1
         while (right < allPeaksFound.size) {
             for (i in left..right) {
                 val peak = allPeaksFound[i]

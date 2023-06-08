@@ -14,11 +14,7 @@ const val ORIGINALS_DIRECTORY = RESOURCES_DIRECTORY + AUDIO_RESOURCES + FULL_SON
 const val TEXT_RESOURCES_DIRECTORY = RESOURCES_DIRECTORY + TEXT_RESOURCES
 const val CONVERTED_SONGS_TEMP_DIRECTORY = RESOURCES_DIRECTORY + AUDIO_RESOURCES + TEMP_DIRECTORY
 
-val recordedSongsList = listOf<String>(
-    "record",
-    "rock",
-    "pop",
-    "japan",
-    "in-the-end-acapella",
-    "in-the-end-instrumental",
-)
+val PEAK_FINDING_RANGE = 500f..3000f
+const val NUMBER_OF_PEAKS = 2
+const val REFERENCE_PEAK_DISTANCE = 3
+const val TARGET_AREA_SIZE = 5
