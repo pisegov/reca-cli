@@ -14,6 +14,9 @@ import constants.ORIGINALS_DIRECTORY
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import App.tester
+import java.time.Duration
+import java.time.LocalDateTime
 import kotlin.streams.toList
 
 class DatabaseFiller {
@@ -31,7 +34,13 @@ class DatabaseFiller {
             dividedSongsList.add(fullSongsList.subList(fromIndex, toIndex))
             launch {
                 dividedSongsList[i].forEach { song ->
+                    val date1 = LocalDateTime.now()
+
                     addSingleSong(song)
+
+                    val date2 = LocalDateTime.now()
+                    val duration = Duration.between(date1, date2).toSeconds()
+                    tester.writeOutput("Seconds have passed: $duration\n")
                 }
             }
         }
@@ -64,14 +73,14 @@ class DatabaseFiller {
             )
         }
 
-        preprocessedFile.delete()
+//        preprocessedFile.delete()
 
-        println("\n${songInDB.id}: $songTitleWithArtist")
+        println("${songInDB.id}: $songTitleWithArtist")
         fingerprintsRepository.addFingerprintsList(songFingerprints)
     }
 
     //https://stackoverflow.com/questions/49419971/kotlin-get-list-of-all-files-in-resource-folder
-    private fun getAllMusicFilesInDirectory(directoryPath: String, fileExtension: String = ".mp3"): List<String> {
+    fun getAllMusicFilesInDirectory(directoryPath: String, fileExtension: String = ".mp3"): List<String> {
         val resourcesPath = Paths.get(directoryPath)
         return Files.walk(resourcesPath)
             .filter { item -> Files.isRegularFile(item) }

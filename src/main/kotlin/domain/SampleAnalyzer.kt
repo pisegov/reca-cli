@@ -1,5 +1,6 @@
 package domain
 
+import App.tester
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
 import be.tarsos.dsp.SpectralPeakProcessor
@@ -84,7 +85,7 @@ class SampleAnalyzer(
         audioProcessors.add(audioProcessor)
         audioDispatcherProvider.addProcessorsAndStartDispatcher(audioProcessors)
 
-        println("${allPeaksFound.size} peaks found")
+        tester.writeOutput("\nPeaks found: ${allPeaksFound.size} ")
 
         return addresses
     }

@@ -3,6 +3,7 @@ package domain
 import App.fingerprintsRepository
 import App.sampleAnalyzer
 import App.songsRepository
+import App.tester
 import data.model.SongWithTimeDelta
 import domain.operating_specifiers.audio_dispatcher_providers.AudioDispatcherProvider
 import domain.operating_specifiers.constellation_map_writers.ConstellationMapWriter
@@ -20,10 +21,10 @@ class Recognizer {
                 .getHashesFromSample(dispatcherProvider, constellationMapWriter)
                 .associate { it.hashCode() to it.anchorTimeStamp }
 
-        println("Fingerprints from record: ${recordedFingerprintsList.size}")
+        tester.writeOutput("Fingerprints from record: ${recordedFingerprintsList.size}")
 
         val matchingFingerprints = fingerprintsRepository.getFingerprints(recordedFingerprintsList.keys)
-        println("Matching fingerprints from db: ${matchingFingerprints.size}")
+        tester.writeOutput("Matching fingerprints from db: ${matchingFingerprints.size}")
 
         val songsWithDeltas = matchingFingerprints.map { dbFingerprint ->
             SongWithTimeDelta(
@@ -64,13 +65,16 @@ class Recognizer {
         val secondMostLikelyOption = recOptionsWithTitles[1].second
         val gapFromSecond = mostLikelyOption.toDouble() / secondMostLikelyOption.toDouble()
         if (gapFromSecond > 1.5) {
-            println(recOptionsWithTitles[0].first)
-            println("The gap from the second is $gapFromSecond")
+            tester.writeOutput(recOptionsWithTitles[0].first)
+            tester.writeOutput("The gap from the second is $gapFromSecond")
         } else {
-            println("I'm unsure about the result")
-            println(recOptionsWithTitles)
+            tester.writeOutput("I'm unsure about the result")
+            tester.writeOutput(recOptionsWithTitles)
         }
 
+        recOptionsWithTitles.forEachIndexed { index, song ->
+            tester.writeOutput("$index ${song.second}  ")
+        }
     }
 
     private fun getRecognitionOptionsWithTitles(recognitionOptions: List<Pair<Int, Int>>): List<Pair<String, Int>> {

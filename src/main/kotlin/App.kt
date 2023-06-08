@@ -6,6 +6,7 @@ import data.songs.SongsRepository
 import domain.SampleAnalyzer
 import domain.DatabaseFiller
 import domain.Recognizer
+import utils.Tester
 
 object App {
     val fingerprintsRepository = FingerprintsRepository(FingerprintsDBDataSource(DatabaseProvider.fingerprintsTable))
@@ -13,4 +14,5 @@ object App {
     val sampleAnalyzer = SampleAnalyzer(1024, 11025F)
     val dbFiller = DatabaseFiller()
     val recognizer = Recognizer()
+    val tester = Tester()
 }
