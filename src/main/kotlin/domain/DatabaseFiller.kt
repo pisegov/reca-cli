@@ -18,8 +18,8 @@ import kotlin.streams.toList
 
 class DatabaseFiller {
     suspend fun addSongsFromDirectory(directoryPath: String = ORIGINALS_DIRECTORY) = withContext(Dispatchers.IO) {
-        val fullSongsList = getAllMp3FilesInDirectory(directoryPath)
-        val threadsQty = 6
+        val fullSongsList = getAllMusicFilesInDirectory(directoryPath)
+        val threadsQty = 8
         val dividedSongsList: MutableList<List<String>> = mutableListOf()
         val fullSongsListSize = fullSongsList.size
         val onePeaceCapacity = fullSongsList.size / threadsQty + 1
