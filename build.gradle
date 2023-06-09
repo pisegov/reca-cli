@@ -14,6 +14,23 @@ repositories {
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'MainKt'
+        )
+    }
+    // To avoid the duplicate handling strategy error
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    dependsOn(configurations.runtimeClasspath)
+
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
