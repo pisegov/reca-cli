@@ -3,12 +3,12 @@ package data.songs
 import data.songs.model.SongDTO
 import data.model.Song
 
-class SongsDBDatasource : SongsDataSource {
+class SongsDBDatasource(private val table: SongsTable) : SongsDataSource {
     override fun insert(song: Song): SongDTO {
-        return SongsTable.insert(song)
+        return table.insert(song)
     }
 
     override fun fetchSongsList(idList: Collection<Int>): Map<Int, SongDTO> {
-        return SongsTable.fetchSongsList(idList)
+        return table.fetchSongsList(idList)
     }
 }

@@ -29,7 +29,10 @@ fun updateSampleAnalyzerParams(params: Params = Params()) {
 }
 
 fun main(args: Array<String>) {
-    DatabaseProvider.provide()
+    DatabaseProvider.initDatabaseTables(
+        fingerprintsTableName = "fingerprints_test",
+        songsTableName = "songs_test",
+    )
     disableLoggers()
     updateSampleAnalyzerParams(
         Params(numberOfPeaks = 3, referencePeakDistance = 13, targetAreaSize = 11)

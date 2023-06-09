@@ -7,10 +7,12 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object SongsTable : Table("songs") {
-    private val id = SongsTable.integer("id").autoIncrement()
-    private val title = SongsTable.varchar("title", 100)
+class SongsTable(name: String = "songs") : Table(name) {
+    val id = integer("id").autoIncrement()
+    private val title = varchar("title", 100)
     override val primaryKey = PrimaryKey(id, name = "Songs_Id")
+
+    private val table = this
 
     init {
         index(true, id)
@@ -22,28 +24,28 @@ object SongsTable : Table("songs") {
                 it[title] = song.title
             }
             SongDTO(
-                id = model[SongsTable.id],
+                id = model[table.id],
                 title = model[title]
             )
         }
     }
 
     fun fetchSong(id: Int): SongDTO {
-        val songModel = SongsTable.select { SongsTable.id.eq(id) }.single()
+        val songModel = table.select { table.id.eq(id) }.single()
 
         return SongDTO(
-            id = songModel[SongsTable.id],
+            id = songModel[table.id],
             title = songModel[title]
         )
     }
 
     fun fetchSongsList(idList: Collection<Int>): Map<Int, SongDTO> {
         return transaction {
-            val songModel = SongsTable.select { SongsTable.id.inList(idList) }.limit(10)
+            val songModel = table.select { table.id.inList(idList) }.limit(10)
 
             songModel.toList().associate { row ->
-                row[SongsTable.id] to SongDTO(
-                    id = row[SongsTable.id],
+                row[table.id] to SongDTO(
+                    id = row[table.id],
                     title = row[title]
                 )
             }

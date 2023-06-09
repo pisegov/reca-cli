@@ -9,7 +9,17 @@ import constants.mysql_user
 import constants.mysql_password
 
 object DatabaseProvider {
-    fun provide() {
+    lateinit var fingerprintsTable: FingerprintsTable
+        private set
+
+    lateinit var songsTable: SongsTable
+        private set
+
+    fun initDatabaseTables(fingerprintsTableName: String = "fingerprints", songsTableName: String = "songs") {
+
+        fingerprintsTable = FingerprintsTable(fingerprintsTableName)
+        songsTable = SongsTable(songsTableName)
+
         Database.connect(
             url = "jdbc:mysql://localhost:3306/reca",
             driver = "com.mysql.cj.jdbc.Driver",
@@ -18,17 +28,17 @@ object DatabaseProvider {
         )
 
         transaction {
-            SchemaUtils.create(FingerprintsTable)
-            SchemaUtils.create(SongsTable)
+            SchemaUtils.create(fingerprintsTable)
+            SchemaUtils.create(songsTable)
         }
     }
 
     fun recreateTables() {
         transaction {
-            SchemaUtils.drop(SongsTable)
-            SchemaUtils.drop(FingerprintsTable)
-            SchemaUtils.create(FingerprintsTable)
-            SchemaUtils.create(SongsTable)
+            SchemaUtils.drop(songsTable)
+            SchemaUtils.drop(fingerprintsTable)
+            SchemaUtils.create(fingerprintsTable)
+            SchemaUtils.create(songsTable)
         }
     }
 }

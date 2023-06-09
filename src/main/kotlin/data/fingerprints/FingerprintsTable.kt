@@ -6,11 +6,15 @@ import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object FingerprintsTable : Table(name = "fingerprints") {
-    private val hash = FingerprintsTable.integer("hash")
-    private val songId = FingerprintsTable.integer("song_id")
+class FingerprintsTable(name: String = "fingerprints") : Table(name) {
+    private val hash = integer("hash")
+    private val songId = integer("song_id")
+    //    private val songId =
+    //        integer("song_id").references(DatabaseProvider.songsTable.id, onDelete = ReferenceOption.CASCADE)
 
-    private val offset = FingerprintsTable.integer("time_offset")
+    private val offset = integer("time_offset")
+
+    private val table = this
 
     init {
         index(false, hash)
@@ -29,7 +33,7 @@ object FingerprintsTable : Table(name = "fingerprints") {
 
     fun fetchFingerprints(hashesList: Collection<Int>): List<FingerprintDTO> {
         return transaction {
-            val fingerprintsModel = FingerprintsTable.select { hash.inList(hashesList) }
+            val fingerprintsModel = table.select { hash.inList(hashesList) }
             val fingerprints = fingerprintsModel.map { fingerprintModel ->
                 FingerprintDTO(
                     hash = fingerprintModel[hash],

@@ -1,4 +1,5 @@
-import data.fingerprints.DatabaseDataSource
+import data.DatabaseProvider
+import data.fingerprints.FingerprintsDBDataSource
 import data.fingerprints.FingerprintsRepository
 import data.songs.SongsDBDatasource
 import data.songs.SongsRepository
@@ -7,8 +8,8 @@ import domain.DatabaseFiller
 import domain.Recognizer
 
 object App {
-    val fingerprintsRepository = FingerprintsRepository(DatabaseDataSource())
-    val songsRepository = SongsRepository(SongsDBDatasource())
+    val fingerprintsRepository = FingerprintsRepository(FingerprintsDBDataSource(DatabaseProvider.fingerprintsTable))
+    val songsRepository = SongsRepository(SongsDBDatasource(DatabaseProvider.songsTable))
     val sampleAnalyzer = SampleAnalyzer(1024, 11025F)
     val dbFiller = DatabaseFiller()
     val recognizer = Recognizer()

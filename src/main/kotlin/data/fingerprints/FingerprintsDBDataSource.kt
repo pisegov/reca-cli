@@ -2,13 +2,13 @@ package data.fingerprints
 
 import data.fingerprints.model.FingerprintDTO
 
-class DatabaseDataSource : FingerprintsDataSource {
+class FingerprintsDBDataSource(private val table: FingerprintsTable) : FingerprintsDataSource {
 
     override fun addFingerprintsList(list: List<FingerprintDTO>) {
-        FingerprintsTable.batchInsert(list)
+        table.batchInsert(list)
     }
 
     override fun getFingerprints(hashesList: Collection<Int>): List<FingerprintDTO> {
-        return FingerprintsTable.fetchFingerprints(hashesList)
+        return table.fetchFingerprints(hashesList)
     }
 }
