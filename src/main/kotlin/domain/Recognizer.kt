@@ -71,10 +71,6 @@ class Recognizer {
             println(recOptionsWithTitles)
         }
 
-        recOptionsWithTitles.forEachIndexed { index, song ->
-            println("$index ${song.second}  ")
-        }
-
     }
 
     private fun getRecognitionOptionsWithTitles(recognitionOptions: List<Pair<Int, Int>>): List<Pair<String, Int>> {
