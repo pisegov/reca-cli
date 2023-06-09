@@ -1,10 +1,9 @@
 import App.dbFiller
-import App.recognizer
 import App.sampleAnalyzer
-import data.DatabaseProvider
-import domain.operating_specifiers.audio_dispatcher_providers.MicrophoneAudioDispatcherProvider
-import kotlinx.coroutines.runBlocking
 import constants.ORIGINALS_DIRECTORY
+import data.DatabaseProvider
+import kotlinx.coroutines.runBlocking
+import utils.ArgumentsHandler
 import utils.Params
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -29,14 +28,18 @@ fun updateSampleAnalyzerParams(params: Params = Params()) {
 }
 
 fun main(args: Array<String>) {
+    ArgumentsHandler.handle(args)
+
     DatabaseProvider.initDatabaseTables(
-        fingerprintsTableName = "fingerprints_test",
-        songsTableName = "songs_test",
+        fingerprintsTableName = ArgumentsHandler.tableTitles.first,
+        songsTableName = ArgumentsHandler.tableTitles.second,
     )
+
     disableLoggers()
+
     updateSampleAnalyzerParams(
         Params(numberOfPeaks = 3, referencePeakDistance = 13, targetAreaSize = 11)
     )
 
-    recognizer.recognizeSong(MicrophoneAudioDispatcherProvider())
+    ArgumentsHandler.invokeAction()
 }
