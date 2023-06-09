@@ -10,7 +10,7 @@ import domain.operating_specifiers.constellation_map_writers.NoConstellationMapW
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import utils.ORIGINALS_DIRECTORY
+import constants.ORIGINALS_DIRECTORY
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -71,13 +71,13 @@ class DatabaseFiller {
     }
 
     //https://stackoverflow.com/questions/49419971/kotlin-get-list-of-all-files-in-resource-folder
-    private fun getAllMp3FilesInDirectory(directoryPath: String): List<String> {
+    private fun getAllMusicFilesInDirectory(directoryPath: String, fileExtension: String = ".mp3"): List<String> {
         val resourcesPath = Paths.get(directoryPath)
         return Files.walk(resourcesPath)
             .filter { item -> Files.isRegularFile(item) }
             .filter { item ->
                 val title = item.toString()
-                title.endsWith(".mp3")
+                title.endsWith(fileExtension)
             }
             .map { item -> item.toString() }
             .toList()

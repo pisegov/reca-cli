@@ -1,4 +1,4 @@
-package utils
+package constants
 
 const val RESOURCES_DIRECTORY = "/home/pmikhail/reca-resources/"
 const val AUDIO_RESOURCES = "audio/"

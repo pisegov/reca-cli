@@ -4,7 +4,7 @@ import App.sampleAnalyzer
 import data.DatabaseProvider
 import domain.operating_specifiers.audio_dispatcher_providers.MicrophoneAudioDispatcherProvider
 import kotlinx.coroutines.runBlocking
-import utils.ORIGINALS_DIRECTORY
+import constants.ORIGINALS_DIRECTORY
 import utils.Params
 import java.util.logging.Level
 import java.util.logging.Logger

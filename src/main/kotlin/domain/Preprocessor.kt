@@ -4,8 +4,8 @@ import ie.corballis.sox.SoXEffect
 import ie.corballis.sox.Sox
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
-import utils.CONVERTED_SONGS_TEMP_DIRECTORY
-import utils.CONVERTED_SONG_EXTENSION
+import constants.CONVERTED_SONGS_TEMP_DIRECTORY
+import constants.CONVERTED_SONG_EXTENSION
 import java.io.File
 
 class Preprocessor(private val songFilePath: String) {
