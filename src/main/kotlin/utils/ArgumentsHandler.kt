@@ -49,6 +49,11 @@ object ArgumentsHandler {
         "-b" to {
             tableTitles = Pair("fingerprints", "songs")
         },
+        "-bt" to {
+            updateAction {
+                App.tester.startBigTest()
+            }
+        },
         "-m" to {
             updateAction { recognizer.recognizeSong(MicrophoneAudioDispatcherProvider()) }
         },

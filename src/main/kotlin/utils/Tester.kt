@@ -5,6 +5,9 @@ import App.fingerprintsRepository
 import App.recognizer
 import App.sampleAnalyzer
 import App.songsRepository
+import constants.AUDIO_RESOURCES_DIRECTORY
+import constants.CONVERTED_SONG_EXTENSION
+import constants.TEST_OUTPUTS_DIRECTORY
 import data.DatabaseProvider
 import data.fingerprints.model.FingerprintDTO
 import data.model.Song
@@ -70,24 +73,46 @@ class Tester {
                 prep.getFileTitleFromPath()
             }
 
-        for (d in 4..15 step 3) {
-            for (ta in 2..10 step 2) {
-                doOneTest(
-                    preprocessedSongsPaths, songsToRecognize, testPaths,
-                    Params(numberOfPeaks = 5, referencePeakDistance = d, targetAreaSize = ta)
-                )
-            }
-        }
+//        for (n in 2..2) {
+//            for (d in 1..15) {
+//                for (ta in 5..5) {
+//                    doOneTest(
+//                        preprocessedSongsPaths, songsToRecognize, testPaths,
+//                        Params(numberOfPeaks = n, referencePeakDistance = d, targetAreaSize = ta)
+//                    )
+//                }
+//            }
+//        }
+//
+//        for (n in 3..3) {
+//            for (d in 13..13) {
+//                for (ta in 1..20) {
+//                    doOneTest(
+//                        preprocessedSongsPaths, songsToRecognize, testPaths,
+//                        Params(numberOfPeaks = n, referencePeakDistance = d, targetAreaSize = ta)
+//                    )
+//                }
+//            }
+//        }
 
-        for (n in 6..10) {
-            for (d in 1..15 step 3) {
-                for (ta in 2..6 step 2) {
-                    doOneTest(
-                        preprocessedSongsPaths, songsToRecognize, testPaths,
-                        Params(numberOfPeaks = n, referencePeakDistance = d, targetAreaSize = ta)
-                    )
-                }
-            }
+        val configsList = listOf<Params>(
+            Params(1, 10, 20),
+            Params(2, 13, 20),
+            Params(3, 13, 11),
+            Params(4, 13, 6),
+            Params(5, 7, 6),
+            Params(6, 7, 4),
+            Params(7, 10, 4),
+            Params(8, 1, 2),
+            Params(9, 1, 2),
+            Params(10, 1, 2),
+        )
+
+        configsList.forEach { config ->
+            doOneTest(
+                preprocessedSongsPaths, songsToRecognize, testPaths,
+                config
+            )
         }
     }
 
